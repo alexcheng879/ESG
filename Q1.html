@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <meta name="description" content="你的 ESG 考前錯題練習室：逐題作答、查看解析、重練錯題，也能新增題目和備份。" />
+  <title>ESG 錯題練習室｜個人考前題庫</title>
+  <style>
+    :root { --bg:#f6f8f6; --surface:#fff; --ink:#172b2b; --text:#2e4542; --muted:#718580; --border:#e1ebe5; --accent:#137968; --accent-2:#dff3e9; --soft:#eef7f1; --red:#c75155; --red-soft:#fff0ed; --amber:#b47c21; --shadow:0 14px 42px rgba(20,65,55,.055); --radius:22px; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:auto; }
+    body { margin:0; color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif; background:radial-gradient(ellipse 50% 250px at 4% 3%, #e0f3e7 0%, transparent 85%), radial-gradient(ellipse 35% 300px at 100% 10%,#e9f0f8 0%,transparent 90%),var(--bg); min-height:100vh; }
+    button, input, select, textarea { font:inherit; }
+    button { cursor:pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline:3px solid #77baa7; outline-offset:2px; }
+    .wrap { max-width:1240px; margin:0 auto; padding:0 28px; }
+    .topbar { height:77px; display:flex; align-items:center; justify-content:space-between; gap:16px; border-bottom:1px solid rgba(30,86,66,.085); }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:850; letter-spacing:-.3px; white-space:nowrap; }
+    .brand-mark { display:grid; place-items:center; width:39px; height:39px; border-radius:13px; color:#fff; background:linear-gradient(150deg,#25a08a,#0d6959); font-size:23px; box-shadow:0 6px 14px #329e8240; }
+    .brand-sub { font-size:11px; color:var(--muted); letter-spacing:1.5px; font-weight:800; display:block; margin-top:1px; }
+    .header-right { display:flex; align-items:center; gap:10px; }
+    .tag-offline { color:#397968; background:#e3f2e9; border:1px solid #d5ebdd; border-radius:30px; font-size:12px; padding:6px 12px; font-weight:750; }
+    .btn { display:inline-flex; justify-content:center; align-items:center; gap:7px; border:1px solid var(--border); border-radius:11px; background:#fff; color:var(--text); padding:11px 16px; font-weight:740; transition:.16s ease; min-height:43px; }
+    .btn:hover { background:#f4faf7; border-color:#aacfc0; transform:translateY(-1px); }
+    .btn:disabled { cursor:default; opacity:.42; transform:none; }
+    .btn-primary { color:white; background:var(--accent); border-color:var(--accent); box-shadow:0 5px 12px #17877423; }
+    .btn-primary:hover { color:white; background:#0c6859; border-color:#0c6859; }
+    .btn-soft { background:#edf7f1; border-color:#d4eadc; color:var(--accent); }
+    .btn-danger { color:var(--red); }
+    .btn-small { font-size:13px; padding:8px 11px; min-height:34px; }
+    .hero { display:grid; grid-template-columns:minmax(0,1fr) 315px; gap:22px; padding:38px 0 25px; align-items:center; }
+    .overline { font-size:12px; letter-spacing:2px; color:#168570; font-weight:850; }
+    .hero h1 { font-size:clamp(30px,4.4vw,46px); margin:10px 0 9px; letter-spacing:-1.5px; line-height:1.24; }
+    .hero h1 span { color:var(--accent); }
+    .hero p { color:var(--muted); line-height:1.85; margin:0; font-size:14px; }
+    .hero-progress { background:#fff; padding:19px 22px; border:1px solid var(--border); border-radius:19px; box-shadow:var(--shadow); }
+    .hero-progress .top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:13px; }
+    .hero-progress .text { font-size:13px; font-weight:850; color:var(--text); }
+    .hero-progress .percent { font-size:25px; font-weight:900; color:var(--accent); font-variant-numeric:tabular-nums; }
+    .progress { background:#eaf0ec; border-radius:100px; height:9px; overflow:hidden; }
+    .progress .fill { background:linear-gradient(90deg,#49b89a,#177c6d); height:100%; width:0%; transition:width .2s; border-radius:inherit; }
+    .progress-caption { display:flex; justify-content:space-between; margin-top:11px; font-size:11px; color:var(--muted); }
+    .stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:23px; }
+    .stat { background:rgba(255,255,255,.86); border:1px solid var(--border); border-radius:17px; padding:15px 18px; min-height:94px; }
+    .stat-label { color:var(--muted); font-size:12px; font-weight:730; }
+    .stat-value { font-size:27px; font-weight:880; margin-top:6px; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-.9px; }
+    .stat-value.green { color:var(--accent); } .stat-value.red { color:var(--red); }
+    .workspace { display:grid; grid-template-columns:288px minmax(0,1fr); align-items:start; gap:20px; padding-bottom:65px; }
+    .sidebar, .quiz-card { background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow); border-radius:var(--radius); }
+    .sidebar { padding:20px 16px 16px; }
+    .section-heading { color:var(--text); font-size:13px; font-weight:880; margin:0 3px 13px; display:flex; justify-content:space-between; align-items:center; }
+    .section-heading small { color:var(--muted); font-weight:650; }
+    .search-wrap { position:relative; margin-bottom:13px; }
+    .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#7c9790; pointer-events:none; font-size:15px; }
+    .search { width:100%; border:1px solid var(--border); border-radius:10px; padding:11px 11px 11px 35px; background:#fbfdfc; color:var(--ink); font-size:13px; }
+    .select { width:100%; border:1px solid var(--border); border-radius:10px; padding:10px; font-size:13px; background:#fbfdfc; color:var(--text); margin-bottom:13px; }
+    .filter-list { display:grid; gap:4px; }
+    .filter-button { width:100%; text-align:left; border:1px solid transparent; background:transparent; color:#576e68; border-radius:10px; padding:10px 12px; font-size:13px; font-weight:700; display:flex; justify-content:space-between; align-items:center; }
+    .filter-button:hover { background:#f5faf7; }
+    .filter-button.active { background:#e9f6ee; color:#0a7361; border-color:#d4eee0; }
+    .filter-count { background:#f2f5f3; color:#70817a; border-radius:40px; min-width:27px; padding:2px 7px; text-align:center; font-size:11px; }
+    .filter-button.active .filter-count { color:#0a7361; background:#d5ece0; }
+    .sidebar-divider { border:none; height:1px; background:var(--border); margin:21px 3px; }
+    .nav-list { display:flex; flex-direction:column; gap:5px; max-height:428px; overflow-y:auto; padding-right:3px; scrollbar-color:#c8ded3 transparent; }
+    .nav-row { width:100%; border:1px solid transparent; background:transparent; border-radius:11px; padding:10px 10px; display:flex; gap:10px; align-items:center; text-align:left; }
+    .nav-row:hover { background:#f7faf8; }
+    .nav-row.active { border-color:#bde3cf; background:#eef8f1; }
+    .nav-no { flex:0 0 37px; height:35px; display:grid; place-items:center; border:1px solid #e5eae5; border-radius:9px; color:#647a72; font-size:12px; font-weight:900; background:#f8faf8; font-variant-numeric:tabular-nums; }
+    .nav-row.active .nav-no { background:#dbf0e4; border-color:#c5e4d1; color:#0a7966; }
+    .nav-info { min-width:0; flex:1; }
+    .nav-title { font-size:12px; font-weight:780; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#39534a; }
+    .nav-sub { font-size:10px; color:#8a9b93; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:4px; }
+    .status-dot { font-size:14px; font-weight:850; color:#a1b6ae; }
+    .status-dot.good { color:#2b9b7b; } .status-dot.bad { color:var(--red); }
+    .backup-box { margin-top:20px; background:#f6faf7; border:1px solid #e0ede5; border-radius:13px; padding:13px; }
+    .backup-title { font-size:12px; font-weight:850; color:#47675d; margin-bottom:5px; }
+    .backup-note { font-size:11px; line-height:1.7; color:#7d948a; margin-bottom:10px; }
+    .backup-actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .backup-actions .btn { font-size:11px; padding:7px 9px; min-height:32px; }
+    .practice-topline { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:13px; }
+    .practice-meta { font-size:12px; font-weight:770; color:#739087; }
+    .practice-actions { display:flex; gap:7px; }
+    .quiz-card { padding:30px 34px 25px; min-height:510px; }
+    .q-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+    .pill { border-radius:100px; background:#ecf6ef; color:#25836e; padding:6px 10px; font-weight:800; font-size:11px; }
+    .pill-nr { color:#8b9b8e; background:#f2f5f2; }
+    .q-top { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+    .q-title { font-size:clamp(18px,2vw,23px); font-weight:810; line-height:1.85; letter-spacing:.1px; white-space:pre-wrap; margin:0 0 25px; }
+    .bookmark { border:1px solid var(--border); background:white; color:#97a9a1; border-radius:12px; height:39px; min-width:39px; display:grid; place-items:center; font-size:22px; }
+    .bookmark.active { color:#b67c18; background:#fff8e9; border-color:#f2dfb1; }
+    .hint { color:#91a29b; font-size:12px; font-weight:650; margin:0 0 12px; }
+    .options { display:grid; gap:11px; }
+    .option { display:flex; gap:15px; align-items:center; padding:15px 17px; min-height:61px; border:1.5px solid #e4ebe5; border-radius:13px; background:#fff; text-align:left; color:var(--text); transition:background .15s,border-color .15s,transform .12s; width:100%; }
+    .option:not(:disabled):hover { background:#f4faf6; border-color:#99d2bb; transform:translateX(2px); }
+    .option:disabled { cursor:default; }
+    .opt-letter { display:grid; flex:0 0 32px; width:32px; height:32px; place-items:center; border-radius:9px; background:#f3f6f3; border:1px solid #e6eee8; font-weight:870; color:#829489; font-size:12px; }
+    .opt-text { flex:1; font-size:14px; line-height:1.7; font-weight:650; }
+    .opt-result { font-size:14px; font-weight:850; white-space:nowrap; }
+    .option.good { border-color:#5dbda2; background:#e9f8ef; }
+    .option.good .opt-letter { background:#cfeee0; border-color:#acd9c5; color:#137662; }
+    .option.good .opt-result { color:#158066; }
+    .option.bad { border-color:#efada8; background:#fff2f0; }
+    .option.bad .opt-letter { background:#fde2de; border-color:#f9c9c2; color:#b54d4d; }
+    .option.bad .opt-result { color:var(--red); }
+    .option.dim { opacity:.75; }
+    .feedback { margin-top:17px; padding:12px 16px; border-radius:12px; background:#eaf7ee; color:#167559; font-size:13px; font-weight:780; display:flex; align-items:center; gap:9px; line-height:1.6; }
+    .feedback.wrong { background:#fff2ee; color:#bd5551; }
+    .feedback .emoji { font-size:17px; }
+    .explanation { margin-top:20px; background:#f8fbf8; border:1px solid #ddece3; border-radius:15px; padding:20px 20px 17px; }
+    .explanation h3 { font-size:16px; margin:0 0 11px; color:#0b725e; }
+    .explanation p { font-size:13px; color:#496258; line-height:1.9; margin:0 0 10px; }
+    .explain-reasons { display:grid; gap:8px; margin:14px 0; }
+    .reason { font-size:12px; line-height:1.75; color:#4f655b; display:flex; align-items:baseline; gap:9px; }
+    .reason-label { flex:0 0 22px; width:22px; border-radius:6px; text-align:center; background:#e7eee8; color:#608373; font-size:11px; font-weight:900; }
+    .reason-label.correct { color:#0d8068; background:#d8f1e5; }
+    .reason-label.wrong { color:#b25651; background:#ffe5e0; }
+    .memory { padding:13px 15px; border-radius:10px; background:#e8f5e9; color:#166b5e; font-size:12px; line-height:1.8; font-weight:800; }
+    .card-footer { margin-top:23px; padding-top:20px; border-top:1px solid var(--border); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .footer-group { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .helptext { font-size:12px; color:#8ba298; margin-top:15px; }
+    .empty { text-align:center; padding:80px 15px; }
+    .empty-icon { font-size:45px; margin-bottom:12px; }
+    .empty h2 { font-size:20px; }
+    .empty p { font-size:13px; color:var(--muted); margin:0 0 20px; }
+    .mobile-nav { display:none; }
+    .footnote { font-size:12px; color:#8ca19a; text-align:center; padding:3px 0 30px; }
+    dialog { border:1px solid #e0eae3; border-radius:21px; padding:0; width:min(690px,calc(100% - 30px)); max-height:min(92vh,900px); box-shadow:0 35px 90px #213b3260; }
+    dialog::backdrop { background:#1027218c; backdrop-filter:blur(4px); }
+    .dialog-header { position:sticky; top:0; background:white; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:20px 25px; border-bottom:1px solid var(--border); }
+    .dialog-header h2 { margin:0; font-size:20px; }
+    .icon-button { border:0; background:#f0f4f1; border-radius:8px; width:31px; height:31px; color:#547267; font-size:17px; }
+    .dialog-inner { padding:24px 25px 26px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .form-field { margin-bottom:13px; }
+    .form-field label { display:block; font-size:12px; font-weight:830; color:#4e6d61; margin-bottom:7px; }
+    .form-control { width:100%; background:#fbfdfc; border:1px solid #dbe8de; padding:11px 12px; color:var(--ink); border-radius:10px; font-size:13px; }
+    textarea.form-control { min-height:74px; resize:vertical; line-height:1.65; }
+    .dialog-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; border-top:1px solid var(--border); margin-top:9px; padding-top:18px; }
+    .form-note { font-size:11px; color:#8c9e95; line-height:1.6; }
+    .toast { position:fixed; z-index:20; bottom:26px; left:50%; transform:translate(-50%,20px); opacity:0; pointer-events:none; background:#193b32; color:white; font-size:13px; padding:12px 19px; border-radius:12px; box-shadow:0 8px 24px #0002; transition:opacity .2s,transform .2s; }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media(max-width:900px) { .hero { grid-template-columns:1fr; gap:17px; } .hero-progress { max-width:100%; } .workspace { grid-template-columns:235px minmax(0,1fr); gap:13px; } .quiz-card { padding:23px; } .wrap { padding:0 17px; } }
+    @media(max-width:670px) { .topbar { height:67px; gap:6px; } .brand-sub { font-size:10px; letter-spacing:1px; } .tag-offline { display:none; } .brand { font-size:14px; } .brand-mark { height:34px; width:34px; } .topbar .btn { font-size:12px; padding:8px 11px; min-height:36px; white-space:nowrap; } .hero { padding-top:27px; } .hero h1 { font-size:32px; } .hero p { font-size:12px; } .stats { grid-template-columns:repeat(2,1fr); gap:9px; } .stat { min-height:82px; padding:13px 15px; } .stat-value { font-size:25px; } .workspace { display:flex; flex-direction:column; gap:12px; } .sidebar { width:100%; padding:14px; } .sidebar .nav-section { display:none; } .filter-list { grid-template-columns:repeat(5,max-content); gap:5px; overflow-x:auto; padding-bottom:1px; } .filter-button { font-size:12px; white-space:nowrap; width:auto; padding:8px 10px; } .filter-count { margin-left:6px; } .sidebar-divider { margin:14px 2px; } .search-wrap { margin-bottom:10px; } .select { margin-bottom:11px; } .backup-box { margin-top:12px; } .mobile-nav { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:6px; margin-bottom:10px; } .practice-topline { margin-bottom:8px; } .quiz-card { border-radius:17px; min-height:0; padding:21px 17px; } .q-title { font-size:18px; line-height:1.75; margin-bottom:21px; } .option { padding:12px; gap:10px; min-height:56px; } .opt-letter { flex-basis:30px; width:30px; height:30px; } .opt-text { font-size:13px; } .card-footer { display:grid; grid-template-columns:1fr; gap:9px; } .card-footer .footer-group { display:flex; width:100%; flex-wrap:nowrap; } .card-footer .footer-group .btn { flex:1; white-space:nowrap; padding:10px 5px; font-size:12px; } .helptext { display:none; } .form-grid { grid-template-columns:1fr; gap:0; } .dialog-inner { padding:17px; } .dialog-header { padding:16px 18px; } }
+    @media(prefers-reduced-motion:reduce) { * { transition:none!important; } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span><div>ESG 錯題練習室<span class="brand-sub">YOUR PERSONAL QUESTION BANK</span></div></div>
+    <div class="header-right"><span class="tag-offline">● 可離線使用</span><button class="btn btn-primary" id="addBtn" type="button">＋ 新增題目</button></div>
+  </header>
+  <section class="hero">
+    <div>
+      <div class="overline">EXAM PREP / 你的專屬複習計畫</div>
+      <h1>把錯過的題目，<br><span>變成拿分的實力。</span></h1>
+      <p>精選你親自貼過的 ESG 錯題。先自己選答案，再點開短詳解與記憶口訣。<br>答題進度會保存在這個瀏覽器，也能自行新增題目。</p>
+    </div>
+    <div class="hero-progress" aria-label="練習進度">
+      <div class="top"><span class="text">本次學習進度</span><span class="percent" id="percent">0%</span></div>
+      <div class="progress"><div class="fill" id="progressFill"></div></div>
+      <div class="progress-caption"><span id="progressCopy">已完成 0 / 29 題</span><span>持續累積就會進步</span></div>
+    </div>
+  </section>
+  <section class="stats" aria-label="答題統計">
+    <div class="stat"><div class="stat-label">收錄題目</div><div class="stat-value" id="statTotal">29</div></div>
+    <div class="stat"><div class="stat-label">已作答</div><div class="stat-value" id="statDone">0</div></div>
+    <div class="stat"><div class="stat-label">目前答對</div><div class="stat-value green" id="statCorrect">0</div></div>
+    <div class="stat"><div class="stat-label">曾經答錯</div><div class="stat-value red" id="statWrong">0</div></div>
+  </section>
+  <div class="workspace">
+    <aside class="sidebar">
+      <div class="section-heading">練習篩選 <small>分類 / 搜尋</small></div>
+      <div class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><input id="search" class="search" type="search" placeholder="搜尋題目、關鍵字、題號" autocomplete="off" aria-label="搜尋題目" /></div>
+      <select id="categoryFilter" class="select" aria-label="選擇題目分類"><option value="all">所有主題分類</option></select>
+      <div class="filter-list" id="filterList"></div>
+      <hr class="sidebar-divider" />
+      <div class="nav-section"><div class="section-heading">題目導覽 <small id="navCount"></small></div><div id="navList" class="nav-list"></div></div>
+      <div class="backup-box">
+        <div class="backup-title">☁ 題庫備份與匯入</div>
+        <div class="backup-note">新增題目與答題紀錄存於目前瀏覽器。換電腦、換檔案位置前，建議匯出備份。</div>
+        <div class="backup-actions"><button class="btn" id="exportBtn" type="button">↓ 匯出 JSON</button><button class="btn" id="importBtn" type="button">↑ 匯入 JSON</button><button class="btn btn-danger" id="resetBtn" type="button">清除進度</button></div>
+        <input type="file" accept=".json,application/json" id="importFile" hidden />
+      </div>
+    </aside>
+    <main class="practice" id="practice">
+      <div class="mobile-nav"><span class="practice-meta" id="mobileCount"></span><select id="mobileJump" class="select" style="width:auto;max-width:100%;margin:0" aria-label="跳到指定題目"></select></div>
+      <div class="practice-topline"><span class="practice-meta" id="studyCount">開始你的第一題</span><div class="practice-actions"><button type="button" class="btn btn-small" id="randomBtn">⤨ 隨機抽題</button></div></div>
+      <section class="quiz-card" id="quizCard" aria-live="polite"></section>
+      <div class="footnote" style="margin-top:22px">考前複習用個人題庫 · 題目依原始講義整理，若法規更新，請以最新公告為準。</div>
+    </main>
+  </div>
+</div>
+<dialog id="questionDialog" aria-labelledby="dialogTitle">
+  <div class="dialog-header"><h2 id="dialogTitle">新增錯題</h2><button type="button" class="icon-button" id="closeDialog" aria-label="關閉">×</button></div>
+  <form id="questionForm" class="dialog-inner">
+    <div class="form-grid">
+      <div class="form-field"><label for="newNo">原始題號</label><input id="newNo" class="form-control" type="text" placeholder="例如 72" maxlength="30" required /></div>
+      <div class="form-field"><label for="newGroup">分類</label><input id="newGroup" class="form-control" type="text" list="groupSuggestions" placeholder="例如 氣候科學與調適" maxlength="50" required /><datalist id="groupSuggestions"></datalist></div>
+    </div>
+    <div class="form-field"><label for="newQuestion">題目內容</label><textarea id="newQuestion" class="form-control" placeholder="貼上完整題目內容" required></textarea></div>
+    <div class="form-grid">
+      <div class="form-field"><label for="optionA">選項 A</label><input id="optionA" class="form-control" required /></div>
+      <div class="form-field"><label for="optionB">選項 B</label><input id="optionB" class="form-control" required /></div>
+      <div class="form-field"><label for="optionC">選項 C</label><input id="optionC" class="form-control" required /></div>
+      <div class="form-field"><label for="optionD">選項 D</label><input id="optionD" class="form-control" required /></div>
+    </div>
+    <div class="form-field"><label for="newAnswer">正確答案</label><select id="newAnswer" class="form-control" required><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div>
+    <div class="form-field"><label for="newSummary">簡短詳解</label><textarea id="newSummary" class="form-control" placeholder="這題為什麼選這個答案？" required></textarea></div>
+    <div class="form-field"><label for="newMemory">記憶口訣（選填）</label><input id="newMemory" class="form-control" placeholder="例如：碳費＝環境部＋專款專用" /></div>
+    <div class="dialog-footer"><span class="form-note">資料僅存在你的瀏覽器，記得定期匯出備份。</span><div class="footer-group"><button type="button" id="cancelDialog" class="btn">取消</button><button type="submit" class="btn btn-primary">儲存題目</button></div></div>
+  </form>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="application/json" id="initialQuestions">[{"id":"climate-43","no":"43","group":"氣候科學與調適","question":"根據科技部（2022）《IPCC 氣候變遷第六次評估報告「衝擊、調適與脆弱度」之科學重點摘錄與臺灣氣候變遷衝擊評析更新報告》，在 IPCC AR6 升溫 2°C 情境下，臺灣周邊海域海平面將上升多少？","options":["0.5 公尺","1.0 公尺","1.5 公尺","2.0 公尺"],"answer":"A","summary":"題目所引用的臺灣評析報告，升溫 2°C 情境對應的海平面上升約 0.5 公尺（50 公分）。","memory":"升溫 2°C → 海平面升 0.5 公尺。","reasons":{}},{"id":"climate-44","no":"44","group":"氣候科學與調適","question":"有關全球碳定價推動與趨勢的數據資料，可以到哪一個單位的網站查詢？","options":["Climate Central","聯合國政府間氣候變遷專門委員會（IPCC）","ClimateWise","世界銀行"],"answer":"D","summary":"世界銀行整理全球碳稅、排放交易等碳定價制度的實施與趨勢資料。","memory":"全球「碳定價」資料 → 世界銀行。","reasons":{"A":"Climate Central 著重氣候衝擊與海平面風險。","B":"IPCC 主要彙整及評估氣候科學。","C":"ClimateWise 著重保險業氣候風險。","D":"世界銀行提供全球碳定價資料。"}},{"id":"climate-55","no":"55","group":"氣候科學與調適","question":"IPCC AR6《2022 氣候變遷：影響、調適與脆弱性》報告針對八種不同的代表性關鍵風險提出調適方案，下列何者並非上述代表性關鍵風險？","options":["沿海社會生態系統的風險","陸地和海洋生態系統的風險","糧食安全的風險","少子化的風險"],"answer":"D","summary":"氣候關鍵風險涵蓋生態、沿海地區、糧食等衝擊；少子化不是該報告列出的八大代表性關鍵風險。","memory":"氣候風險管「生態、糧食、生活」，不管出生率。","reasons":{}},{"id":"climate-64","no":"64","group":"氣候科學與調適","question":"臺灣政府的「國家氣候變遷調適行動計畫（112～115 年）」將調適行動方案分為 7 大領域，其中「土地利用」不是下列哪個部會負責管轄的範圍？","options":["經濟部","農業部","交通部","內政部"],"answer":"C","summary":"土地利用領域涉及內政、農業、經濟等單位；交通部主要負責「維生基礎設施」等交通相關調適。","memory":"土地找內政、農地找農業、交通設施找交通。","reasons":{}},{"id":"climate-70","no":"70","group":"氣候科學與調適","question":"《刺胳針地球健康》（Lancet Planetary Health）的研究顯示，從 2015 年到 2019 年，空氣污染、水污染或有毒化學污染每年造成多少人死亡？","options":["100 萬人","500 萬人","900 萬人","1,400 萬人"],"answer":"C","summary":"研究估計全球每年約 900 萬人因各種污染而過早死亡，約占全球死亡人數的六分之一。","memory":"污染每年約 900 萬人。","reasons":{}},{"id":"climate-71","no":"71","group":"氣候科學與調適","question":"根據 IPCC《氣候變遷與土地》（Climate Change and Land）特別報告，2008～2017 年，土地吸收了全世界溫室氣體排放量的多少比例？","options":["10%","20%","30%","40%"],"answer":"C","summary":"陸地植物與土壤在該期間吸收了約 30% 的人為二氧化碳排放。","memory":"土地吸收 30%。","reasons":{}},{"id":"climate-72","no":"72","group":"氣候科學與調適","question":"根據 IPCC《氣候變遷與土地》特別報告，在 2007～2016 年間，農業、林業砍伐、泥炭地劣化和其他類型的土地利用占全球溫室氣體排放量的比例為何？","options":["13%","23%","33%","43%"],"answer":"B","summary":"農業、林業與其他土地利用活動在該期間約占全球人為溫室氣體排放的 23%。","memory":"土地吸收 30%，土地利用排放 23%。","reasons":{}},{"id":"climate-73","no":"73","group":"氣候科學與調適","question":"2007～2016 年度最大的土地二氧化碳排放來自何處？","options":["熱帶森林砍伐","種植水稻","畜牧牛羊","泥炭地劣化"],"answer":"A","summary":"砍伐熱帶森林會釋放樹木與土壤中的碳，是這題所指的重要土地 CO₂ 排放來源。","memory":"砍樹 → CO₂；水稻、牛羊 → CH₄。","reasons":{"A":"熱帶森林砍伐釋放大量 CO₂。","B":"種植水稻以甲烷（CH₄）排放較具代表性。","C":"牛羊反芻消化主要排放甲烷。","D":"泥炭地劣化也會排放 CO₂，但不是本題答案。"}},{"id":"finance-9","no":"9","group":"碳定價與綠色金融","question":"低碳金融之範疇包括下列何者？甲、氣候變遷減緩；乙、氣候變遷調適；丙、公司治理；丁、社會。","options":["僅甲","僅甲、乙","僅甲、乙、丙","甲、乙、丙、丁"],"answer":"A","summary":"本題「低碳金融」特別聚焦氣候變遷減緩，也就是減少碳排放；廣義「氣候金融」可同時涵蓋減緩與調適。","memory":"低碳金融＝減緩；氣候金融＝減緩＋調適。","reasons":{}},{"id":"carbon-18","no":"18","group":"碳定價與綠色金融","question":"關於碳交易，下列敘述何者錯誤？","options":["政府建置平台提供有供需者進行交易","碳價由市場交易結果決定","政府必須訂定排放上限才能促成交易","可分為強制性與自願性兩種市場類型"],"answer":"C","summary":"自願性碳市場也能交易，不一定要先由政府設定排放總量上限；設定總量上限是某些強制性碳交易制度的特徵。","memory":"碳交易 ≠ 一定要政府訂上限。","reasons":{"A":"政府可以提供交易平台。","B":"碳交易價格可由供需形成。","C":"自願性市場不一定有政府設定的排放上限。","D":"常見分類為強制性及自願性市場。"}},{"id":"energy-27","no":"27","group":"淨零政策與再生能源","question":"依據《再生能源發展條例》，下列針對相關再生能源之描述何者有誤？","options":["氫能係指利用不分種類的電力分解水產生之氫氣","地熱能係指地表以下蘊含於如溫泉的能源","離岸風力發電係指設置於低潮線以外海域轉換風能為電能","燃料電池係指藉由氫氣及氧氣產生電化學反應將化學能轉換為電能之裝置"],"answer":"A","summary":"法規定義不是「任何電力製氫」都算；電解水製氫須符合再生能源來源等規定，另也包含特定生物程序產氫。","memory":"綠氫要用綠電，不是什麼電都算！","reasons":{}},{"id":"carbon-21","no":"21","group":"碳定價與綠色金融","question":"比較碳費及碳稅兩種制度，就其差異之描述下列何者有誤？","options":["皆為政府向排碳者收取固定費用","碳稅由環境部收取，碳費則由財政部收取","碳稅屬政府財政總體收支之一環，用途不限於氣候減緩領域","碳費必須專款專用於氣候減緩"],"answer":"B","summary":"收取主管機關寫反了！臺灣碳費由環境部主管；如果採碳稅，則屬稅制、與財政主管機關相關。","memory":"碳費＝環境部＋專款專用；碳稅＝稅制。","reasons":{"A":"兩者都是讓排放有成本的政策工具。","B":"題目把碳費與碳稅的主管機關顛倒。","C":"碳稅為稅收，用途不一定限定在減碳。","D":"我國碳費依法律規定專款專用。"}},{"id":"circular-30","no":"30","group":"循環經濟與永續目標","question":"關於循環經濟，以下敘述何者正確？","options":["從自然環境開採原料後加工製成產品，再經過販售消費後丟棄","可藉由物資循環產生更高經濟價值","通常會歷經「開採、製造、使用、丟棄」流程","強調大量生產、銷售以極大化經濟價值"],"answer":"B","summary":"循環經濟藉由維修、再使用、回收等方式，延長資源價值；其餘選項偏向傳統線性經濟。","memory":"線性：取→造→用→丟；循環：減量→再利用→回收。","reasons":{}},{"id":"sdg-35","no":"35","group":"循環經濟與永續目標","question":"聯合國永續發展目標 SDGs，其中之一旨在減少國家內部及國家之間不平等，下列哪一個不屬於此目標？","options":["提高低收入、弱勢族群的收入水平","確保所有人都享有公平的機會與基本權益","降低貧窮比率","確保言論自由及公民參與權利，維護媒體發言空間"],"answer":"D","summary":"SDG 10 強調減少不平等；言論自由、公共參與和制度保障較接近 SDG 16。","memory":"SDG 1 消除貧窮；SDG 10 減少不平等；SDG 16 和平正義制度。","reasons":{}},{"id":"netzero-6","no":"6","group":"淨零政策與再生能源","question":"臺灣 2050 淨零排放路徑包含二大治理基礎，請問下列何者為二大治理內容？","options":["能源轉型及社會共融","科技研發及氣候法制","科技研發及產業轉型","氣候法制及循環經濟"],"answer":"B","summary":"臺灣 2050 淨零排放路徑為「四大轉型、兩大治理基礎」，兩大治理基礎是科技研發及氣候法制。","memory":"四大轉型：能、產、生、社；兩大治理：科技＋法制。","reasons":{}},{"id":"law-9","no":"9","group":"淨零政策與再生能源","question":"下列何者不是《氣候變遷因應法》之重點內容？","options":["2050 淨零排放目標入法","碳稅專款專用","穩健推動碳交易","優化碳盤查法規與系統"],"answer":"B","summary":"法律規定的是「碳費」專款專用，不是「碳稅」專款專用。","memory":"碳費＝環境部＋專款專用。","reasons":{}},{"id":"carbon-tw-18","no":"18","group":"碳定價與綠色金融","question":"我國現行推動之碳交易，性質屬於下列何者？","options":["自願減量額度交易","強制總量管制交易","自願與強制兩者混合","以上皆非"],"answer":"A","summary":"臺灣現行碳權交易重點是自願減量額度交易；政府設定排放總量的強制交易機制尚非本題所述現況。","memory":"臺灣現行：自願減量額度交易。","reasons":{}},{"id":"corp-24","no":"24","group":"企業永續揭露與治理","question":"依據我國推動上市櫃公司永續發展行動方案，將於 2024 年起依資本額規模分階段推動，上市櫃公司應於股東會 30 日前上傳議事手冊、14 日前上傳年報，屬於下列哪一項主題內容？","options":["強化利害關係人溝通","推動 ESG 評鑑及數位化","引領企業淨零","深化企業永續治理文化"],"answer":"A","summary":"提前公開股東會議事手冊與年報，讓股東及利害關係人有時間了解公司議案，屬於資訊透明與溝通。","memory":"30 天議事手冊、14 天年報 → 股東溝通。","reasons":{}},{"id":"roadmap-26","no":"26","group":"企業永續揭露與治理","question":"我國推動上市櫃公司永續發展路徑圖，主要是訂定上市櫃公司什麼時程，以達永續發展？","options":["企業社會責任報告編製時程","溫室氣體盤查資訊揭露時程","財務數據揭露時程","聯合國永續發展目標執行時程"],"answer":"B","summary":"上市櫃公司永續發展路徑圖重點是分階段推動溫室氣體盤查、查證（確信）與相關揭露。","memory":"永續發展路徑圖 → 溫室氣體盤查時程。","reasons":{}},{"id":"roadmap-31","no":"31","group":"企業永續揭露與治理","question":"何項金管會政策規範全體上市櫃公司應按資本額分階段揭露溫室氣體範疇一及二的個體及集團合併排放量資訊？","options":["公司治理 3.0","綠色金融 3.0","上市櫃公司永續發展路徑圖","我國接軌 IFRS 永續揭露準則藍圖"],"answer":"C","summary":"依資本額與產業分階段揭露範疇一、二的碳盤查資訊，正是「上市櫃公司永續發展路徑圖」的安排。","memory":"永續發展路徑圖＝碳盤查；IFRS 接軌藍圖＝永續財務揭露。","reasons":{}},{"id":"roadmap-32","no":"32","group":"企業永續揭露與治理","question":"關於「上市櫃公司永續發展路徑圖」，下列敘述何者有誤？","options":["訂定上市櫃公司溫室氣體盤查資訊揭露時程","按實收資本額自 2023 年起分階段推動","預計 2027 年全體上市櫃公司完成溫室氣體盤查","要求揭露內容包含範疇三排放量"],"answer":"D","summary":"此路徑圖主要要求盤查與揭露範疇一、二；範疇三不是本題所指的強制揭露範圍。","memory":"路徑圖先管範疇一、二；範疇三是上下游。","reasons":{}},{"id":"roadmap-42","no":"42","group":"企業永續揭露與治理","question":"我國推動上市櫃公司永續發展路徑圖，2027 年須完成確信的不包含下列哪一類？","options":["資本額 50 億元以下合併報表子公司","鋼鐵合併報表子公司","水泥業合併報表子公司","資本額 50 至 100 億元個體公司"],"answer":"A","summary":"2027 年完成確信涵蓋大型企業集團子公司及中型企業個體；50 億元以下合併報表子公司較晚，為 2029 年。","memory":"2027 大企業子＋中企業個；2028 中企業子＋小企業個；2029 小企業子。","reasons":{}},{"id":"roadmap-43","no":"43","group":"企業永續揭露與治理","question":"我國推動上市櫃公司永續發展路徑圖，盤查時程規劃不包含哪一項？","options":["第一階段（2023 年）：資本額 100 億元以上上市櫃公司，及鋼鐵、水泥業盤查個體公司","第二階段（2025 年）：資本額 100 億元以上上市櫃公司，及鋼鐵、水泥業之合併報表子公司完成盤查","第三階段（2026 年）：資本額 50 至 100 億元上市櫃公司之合併報表子公司完成盤查","第一階段（2024 年）：資本額 100 億元以上上市櫃公司，及鋼鐵、水泥業完成確信"],"answer":"D","summary":"前三項談的是「盤查時程」，D 談的是「確信時程」，所以不屬於題目詢問的盤查規劃。","memory":"盤查＝自己算；確信＝第三方查。","reasons":{}},{"id":"green-59","no":"59","group":"綠色及轉型金融","question":"下列何者不屬於「綠色及轉型金融行動方案」之六大推動面向？","options":["資金","資料","生態","布局"],"answer":"D","summary":"六大面向是資金、資料、揭露、培力、生態、國際影響力；「布局」不在這六項中。","memory":"資、資、揭、培、生、國。","reasons":{}},{"id":"green-60","no":"60","group":"綠色及轉型金融","question":"根據現行的「綠色及轉型金融行動方案」，「建置我國綠色證券認證制度」屬於哪一個推動面向之措施？","options":["生態","揭露","資金","資料"],"answer":"C","summary":"綠色證券認證協助投資人辨識綠色標的，促進資金流向永續投資，因此屬資金面。","memory":"綠色證券 → 投資 → 資金。","reasons":{}},{"id":"green-61","no":"61","group":"綠色及轉型金融","question":"我國「綠色及轉型金融行動方案」揭露面有關措施不包括下列哪一項？","options":["蒐集建置企業碳排平均數據資料庫","鼓勵金融業揭露減碳目標與策略","簡化永續報告書編製作業及優化財務碳排資訊","參考 TNFD 架構揭露相關資訊"],"answer":"A","summary":"蒐集碳排數據、建立資料庫屬「資料面」；揭露面是把減碳策略、永續資訊公開給外界。","memory":"資料面＝收進來；揭露面＝說出去。","reasons":{}},{"id":"taxonomy-64","no":"64","group":"永續經濟活動認定","question":"有關臺灣永續經濟活動認定參考指引之敘述，下列何者錯誤？","options":["此指引之經濟活動分為二類：一般經濟活動及支持型經濟活動","此指引目前已涵蓋國內所有產業及經濟活動","此指引係以對任一環境目的具有實質貢獻，且未對六項環境目的及社會保障造成重大危害之條件，作為永續經濟活動之認定方法","此指引目前就一項或多項環境目的訂有具實質貢獻之技術篩選標準作為判斷基準"],"answer":"B","summary":"指引目前僅涵蓋特定經濟活動，沒有涵蓋國內全部產業；其認定重點是實質貢獻、無重大危害與最低社會保障。","memory":"永續認定＝有實質貢獻＋不造成重大危害。","reasons":{}},{"id":"taxonomy-67","no":"67","group":"永續經濟活動認定","question":"「永續經濟活動認定參考指引」第二版判斷經濟活動之永續程度，包含下列哪些類型？甲、符合；乙、轉型中；丙、不符合；丁、不適用。","options":["僅甲、丙","僅甲、乙、丙","僅甲、丙、丁","甲、乙、丙、丁皆是"],"answer":"D","summary":"第二版的判斷結果包含四類：符合、轉型中、不符合、不適用。","memory":"符合／轉型中／不符合／不適用 → 四種都要記。","reasons":{}},{"id":"taxonomy-68","no":"68","group":"永續經濟活動認定","question":"依據「轉型計畫建議涵蓋事項」，針對治理的建議內容，不包括下列哪一個面向？","options":["核定單位及程序","氣候變遷減緩相關指標","監督方式","執行單位及控制程序"],"answer":"B","summary":"治理面談誰核定、誰監督、誰執行；減緩指標屬「指標與目標」面向，不是治理安排。","memory":"治理＝誰核准、誰監督、誰執行；指標＝減多少。","reasons":{}}]</script>
+<script>
+(function () {
+'use strict';
+const builtins = JSON.parse(document.getElementById('initialQuestions').textContent);
+const builtinIds = new Set(builtins.map(q=>q.id));
+const STORAGE_KEY = 'esg-quiz-bank-20261024-v1';
+const ABCD = ['A','B','C','D'];
+const defaultState = () => ({custom:[],progress:{},starred:{}});
+let state;
+try { state = {...defaultState(), ...JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}; } catch { state = defaultState(); }
+if (!Array.isArray(state.custom)) state.custom=[];
+if (!state.progress || typeof state.progress!=='object') state.progress={};
+if (!state.starred || typeof state.starred!=='object') state.starred={};
+let filter='all'; let category='all'; let search=''; let editingId=null;
+let detailsOpen = new Set();
+const all = () => [...builtins,...state.custom.filter(q=>!builtinIds.has(q.id))];
+let selectedId = all().find(q=>!state.progress[q.id]?.choice)?.id || all()[0]?.id || null;
+const $ = id => document.getElementById(id);
+const esc = v=>String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const attr = esc;
+let toastTimer;
+function toast(s) { const t=$('toast'); t.textContent=s; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200); }
+function save() { try {localStorage.setItem(STORAGE_KEY, JSON.stringify(state));} catch {toast('瀏覽器儲存失敗，請匯出 JSON 備份');} }
+function getQuestion(id) { return all().find(q=>q.id===id); }
+function progress(q) { return state.progress[q.id]||{}; }
+function isDone(q) { return !!progress(q).choice; }
+function isCorrect(q) { return progress(q).choice===q.answer; }
+function isWrong(q) { return !!progress(q).everWrong; }
+function visible() { return all().filter(q=>{
+  if (category!=='all'&&q.group!==category) return false;
+  if (filter==='todo' && isDone(q)) return false;
+  if (filter==='wrong' && !isWrong(q)) return false;
+  if (filter==='correct' && !isDone(q)) return false;
+  if (filter==='correct' && !isCorrect(q)) return false;
+  if (filter==='starred' && !state.starred[q.id]) return false;
+  const haystack = [q.no,q.group,q.question,...q.options].join(' ').toLocaleLowerCase();
+  return haystack.includes(search.toLocaleLowerCase().trim());
+}); }
+function counts(){ const qs=all(); return {total:qs.length, done:qs.filter(isDone).length, correct:qs.filter(q=>isDone(q)&&isCorrect(q)).length, wrong:qs.filter(isWrong).length, starred:qs.filter(q=>!!state.starred[q.id]).length}; }
+function renderStats() { const c=counts(); const pct=c.total?Math.round(100*c.done/c.total):0;
+  $('statTotal').textContent=c.total; $('statDone').textContent=c.done; $('statCorrect').textContent=c.correct; $('statWrong').textContent=c.wrong;
+  $('percent').textContent=pct+'%'; $('progressFill').style.width=pct+'%'; $('progressCopy').textContent=`已完成 ${c.done} / ${c.total} 題`;
+}
+function renderFilters(){ const c=counts(); const data=[['all','全部題目',c.total],['todo','尚未作答',c.total-c.done],['wrong','曾經答錯',c.wrong],['correct','目前答對',c.correct],['starred','已收藏',c.starred]];
+  $('filterList').innerHTML=data.map(([id,label,count])=>`<button type="button" class="filter-button ${filter===id?'active':''}" data-filter="${id}" aria-pressed="${filter===id}">${label}<span class="filter-count">${count}</span></button>`).join('');
+}
+function renderCategories() { const groups=[...new Set(all().map(q=>q.group))].sort((a,b)=>a.localeCompare(b,'zh-Hant'));
+  if(category!=='all'&&!groups.includes(category)) category='all';
+  $('categoryFilter').innerHTML='<option value="all">所有主題分類</option>'+groups.map(g=>`<option value="${attr(g)}" ${category===g?'selected':''}>${esc(g)}</option>`).join('');
+  $('groupSuggestions').innerHTML=groups.map(g=>`<option value="${attr(g)}"></option>`).join('');
+}
+function renderNavigation(){ const qs=visible();
+  $('navCount').textContent=qs.length+' 題'; $('studyCount').textContent=qs.length?`目前篩選 ${qs.length} 題　／　點選選項即作答`:'目前篩選 0 題';
+  $('mobileCount').textContent=`共 ${qs.length} 題`;
+  $('mobileJump').innerHTML=qs.length?qs.map(q=>`<option value="${attr(q.id)}" ${q.id===selectedId?'selected':''}>原題 ${esc(q.no)} · ${esc(q.group)}</option>`).join(''):'<option>無符合題目</option>';
+  $('navList').innerHTML=qs.length?qs.map(q=>{
+    const p=progress(q); const status=p.choice?(isCorrect(q)?'<span class="status-dot good">✓</span>':'<span class="status-dot bad">✕</span>'):'<span class="status-dot">○</span>';
+    const short=q.question.length>32?q.question.slice(0,32)+'…':q.question;
+    return `<button type="button" class="nav-row ${q.id===selectedId?'active':''}" data-go="${attr(q.id)}" title="${attr(q.question)}"><span class="nav-no">${esc(q.no)}</span><span class="nav-info"><span class="nav-title" style="display:block">${esc(short)}</span><span class="nav-sub" style="display:block">${esc(q.group)}</span></span>${status}</button>`;
+  }).join(''):'<div style="font-size:12px;color:#81978c;padding:15px 6px">沒有符合條件的題目</div>';
+}
+function renderQuestion(){ const qs=visible(); let q=getQuestion(selectedId);
+  if (!q || (!qs.some(x=>x.id===selectedId) && !isDone(q))) { q=qs[0]; selectedId=q?.id??null; }
+  if (!q) { $('quizCard').innerHTML=`<div class="empty"><div class="empty-icon">🌱</div><h2>這個篩選還沒有題目</h2><p>試著切換篩選，或先新增自己的錯題。</p><button class="btn btn-primary" type="button" data-action="clearFilters">查看全部題目</button></div>`; return; }
+  const p=progress(q); const done=!!p.choice; const good=done&&p.choice===q.answer;
+  const idx=qs.findIndex(x=>x.id===q.id); const idxText=idx>=0?`${idx+1} / ${qs.length}`:`已完成 / ${qs.length} 題`;
+  $('mobileJump').value=qs.some(x=>x.id===q.id)?q.id:(qs[0]?.id||'');
+  let options=q.options.map((o,i)=>{ const c=ABCD[i]; const isTarget=done&&c===q.answer; const isSelected=done&&c===p.choice;
+    const cls=!done?'':(isTarget?'good':(isSelected?'bad':'dim'));
+    const result=isTarget?'<span class="opt-result">✓ 正解</span>':(isSelected?'<span class="opt-result">✕ 你的答案</span>':'');
+    return `<button type="button" class="option ${cls}" data-choice="${c}" ${done?'disabled':''}><span class="opt-letter">${c}</span><span class="opt-text">${esc(o)}</span>${result}</button>`;
+  }).join('');
+  const resultHtml=done?`<div class="feedback ${good?'':'wrong'}" role="status"><span class="emoji">${good?'🎉':'📌'}</span><span>${good?`答對了！正確答案是 ${q.answer}。`:`這題再記一下！你選 ${p.choice}，正確答案是 ${q.answer}。`} ${!detailsOpen.has(q.id)?'點下方「看詳解」複習原因。':''}</span></div>`:'';
+  const reasonHtml=Object.entries(q.reasons||{}).map(([key,value])=>`<div class="reason"><span class="reason-label ${key===q.answer?'correct':(done&&key===p.choice?'wrong':'')}">${esc(key)}</span><span>${esc(value)}</span></div>`).join('');
+  const explainHtml=detailsOpen.has(q.id)?`<div class="explanation" id="detailsPanel"><h3>✦ 這題為什麼選 ${q.answer}？</h3><p>${esc(q.summary)}</p>${reasonHtml?`<div class="explain-reasons">${reasonHtml}</div>`:''}${q.memory?`<div class="memory">💡 考前記法：${esc(q.memory)}</div>`:''}</div>`:'';
+  $('quizCard').innerHTML=`
+    <div class="q-top"><div class="q-meta"><span class="pill">${esc(q.group)}</span><span class="pill pill-nr">原題號 ${esc(q.no)}</span><span class="pill pill-nr">練習 ${esc(idxText)}</span></div><button type="button" class="bookmark ${state.starred[q.id]?'active':''}" data-action="star" aria-label="${state.starred[q.id]?'取消收藏':'收藏題目'}" title="收藏題目">${state.starred[q.id]?'★':'☆'}</button></div>
+    <h2 class="q-title">${esc(q.question)}</h2><div class="hint">選一個你認為正確的答案 ${done?'· 作答完成，可重新練習':''}</div>
+    <div class="options">${options}</div>${resultHtml}${explainHtml}
+    <div class="card-footer"><div class="footer-group"><button class="btn ${detailsOpen.has(q.id)?'btn-soft':''}" type="button" data-action="explain">${detailsOpen.has(q.id)?'⌃ 收起詳解':'◎ 看詳解'}</button><button class="btn" type="button" data-action="retry">↻ 重新作答</button></div><div class="footer-group"><button class="btn" type="button" data-action="prev">← 上一題</button><button class="btn btn-primary" type="button" data-action="next">下一題 →</button></div></div>
+    ${!builtinIds.has(q.id)?'<div style="margin-top:12px;text-align:right"><button type="button" class="btn btn-small" data-action="edit">✎ 編輯自訂題目</button> <button type="button" class="btn btn-small btn-danger" data-action="delete">刪除</button></div>':''}
+    <div class="helptext">小技巧：鍵盤按 1～4 快速選 A～D；按 ← / → 切換題目。答案和進度會自動儲存。</div>`;
+}
+function render(){renderStats();renderFilters();renderCategories();renderNavigation();renderQuestion();}
+function choose(choice){const q=getQuestion(selectedId);if(!q||progress(q).choice||!ABCD.includes(choice))return;
+  const old=progress(q); const correct=choice===q.answer;
+  state.progress[q.id]={...old,choice,attempts:(old.attempts||0)+1,everWrong:!!old.everWrong||!correct};
+  save();render(); }
+function navigate(step){const qs=visible();if(!qs.length)return;let idx=qs.findIndex(q=>q.id===selectedId);
+  if(idx===-1){const indexAll=all().findIndex(q=>q.id===selectedId);const after=qs.findIndex(q=>all().findIndex(a=>a.id===q.id)>indexAll);idx=after===-1?0:after; if(step===1){selectedId=qs[idx].id; render();return;} }
+  selectedId=qs[(idx+step+qs.length)%qs.length].id;render(); }
+function clearFilters(){filter='all';category='all';search='';$('search').value='';selectedId=all()[0]?.id;render();}
+function resetForRetry(){const q=getQuestion(selectedId);if(!q)return;
+  const p=progress(q);state.progress[q.id]={...p,choice:null};detailsOpen.delete(q.id);save();render();toast('已清除這題的當次答案，可再次作答'); }
+function openEditor(id=null){editingId=id;const q=id?getQuestion(id):null;
+  if(id&&!q)return;
+  $('dialogTitle').textContent=id?'編輯錯題':'新增錯題'; $('questionForm').reset();
+  $('newNo').value=q?.no||'';$('newGroup').value=q?.group||'';$('newQuestion').value=q?.question||'';
+  ABCD.forEach((c,i)=>$('option'+c).value=q?.options[i]||'');$('newAnswer').value=q?.answer||'A';$('newSummary').value=q?.summary||'';$('newMemory').value=q?.memory||'';
+  $('questionDialog').showModal(); setTimeout(()=>$('newNo').focus(),10); }
+function validateImported(q) { return q && typeof q.id==='string' && q.id.length>0 && typeof q.question==='string' && q.question.trim() && Array.isArray(q.options) && q.options.length===4 && q.options.every(x=>typeof x==='string') && ABCD.includes(q.answer) && typeof q.group==='string'; }
+function downloadBackup(){const payload={format:'esg-quiz-backup',version:1,exportedAt:new Date().toISOString(),questions:all(),progress:state.progress,starred:state.starred};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}));
+  const link=document.createElement('a');link.href=url;link.download='ESG錯題練習室_題庫與進度_'+new Date().toLocaleDateString('sv-SE')+'.json';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);toast('JSON 備份已匯出'); }
+$('quizCard').addEventListener('click',e=>{const choice=e.target.closest('[data-choice]');if(choice){choose(choice.dataset.choice);return;}
+  const act=e.target.closest('[data-action]');if(!act)return;const a=act.dataset.action;
+  if(a==='explain'){if(detailsOpen.has(selectedId))detailsOpen.delete(selectedId);else detailsOpen.add(selectedId);render();}
+  if(a==='next')navigate(1);if(a==='prev')navigate(-1);if(a==='retry')resetForRetry();
+  if(a==='star'){state.starred[selectedId]=!state.starred[selectedId];save();render();}
+  if(a==='clearFilters')clearFilters();
+  if(a==='edit')openEditor(selectedId);
+  if(a==='delete'){const q=getQuestion(selectedId);if(!q||builtinIds.has(q.id))return;
+    if(confirm('確定要刪除「原題號 '+q.no+'」這一題嗎？')){state.custom=state.custom.filter(x=>x.id!==q.id);delete state.progress[q.id];delete state.starred[q.id];detailsOpen.delete(q.id);selectedId=all()[0]?.id;save();render();toast('題目已刪除');}}
+});
+$('navList').addEventListener('click',e=>{const el=e.target.closest('[data-go]');if(!el)return;selectedId=el.dataset.go;render();});
+$('filterList').addEventListener('click',e=>{const el=e.target.closest('[data-filter]');if(!el)return;filter=el.dataset.filter;selectedId=visible()[0]?.id||null;render();});
+$('search').addEventListener('input',e=>{search=e.target.value;selectedId=visible()[0]?.id||null;render();});
+$('categoryFilter').addEventListener('change',e=>{category=e.target.value;selectedId=visible()[0]?.id||null;render();});
+$('mobileJump').addEventListener('change',e=>{selectedId=e.target.value;render();});
+$('randomBtn').addEventListener('click',()=>{const qs=visible();if(!qs.length)return; const others=qs.filter(q=>q.id!==selectedId);selectedId=(others.length?others:qs)[Math.floor(Math.random()*(others.length||qs.length))].id;render();});
+$('addBtn').addEventListener('click',()=>openEditor());
+$('closeDialog').addEventListener('click',()=>$('questionDialog').close());
+$('cancelDialog').addEventListener('click',()=>$('questionDialog').close());
+$('questionForm').addEventListener('submit',e=>{e.preventDefault();
+  const options=ABCD.map(c=>$('option'+c).value.trim());if(options.some(s=>!s)){toast('請輸入四個選項');return;}
+  const id=editingId||('custom-'+Date.now()+'-'+Math.random().toString(36).slice(2,7));
+  const old=editingId?getQuestion(editingId):null;
+  const obj={id,no:$('newNo').value.trim(),group:$('newGroup').value.trim(),question:$('newQuestion').value.trim(),options,answer:$('newAnswer').value,summary:$('newSummary').value.trim(),memory:$('newMemory').value.trim(),reasons:old?.reasons||{}};
+  if(editingId)state.custom=state.custom.map(q=>q.id===editingId?obj:q); else state.custom.push(obj);
+  const wasEditing=!!editingId; editingId=null;selectedId=id;filter='all';category='all';search='';$('search').value='';save();$('questionDialog').close();render();toast(wasEditing?'題目修改成功':'已將新題加入題庫');
+});
+$('exportBtn').addEventListener('click',downloadBackup);
+$('importBtn').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',async e=>{
+  const f=e.target.files?.[0];if(!f)return;
+  try{const data=JSON.parse(await f.text());if(!Array.isArray(data.questions))throw Error('找不到題庫 questions 陣列');
+    const incoming=data.questions.filter(validateImported);if(!incoming.length)throw Error('題目格式不符合要求');
+    const customs=new Map(state.custom.map(q=>[q.id,q]));for(const q of incoming){if(!builtinIds.has(q.id))customs.set(q.id,q);}
+    state.custom=[...customs.values()];if(data.progress&&typeof data.progress==='object')state.progress={...state.progress,...data.progress};if(data.starred&&typeof data.starred==='object')state.starred={...state.starred,...data.starred};
+    save();clearFilters();toast('題庫匯入成功，現在共 '+all().length+' 題');
+  } catch(err){alert('匯入失敗：'+err.message+'\n請選擇從此頁「匯出 JSON」產生的備份檔。');}
+  e.target.value='';
+});
+$('resetBtn').addEventListener('click',()=>{if(!confirm('確定清除全部答題紀錄嗎？題目及收藏會保留，建議先匯出備份。'))return;state.progress={};detailsOpen.clear();selectedId=all()[0]?.id;save();render();toast('全部答題進度已清除');});
+document.addEventListener('keydown',e=>{const tag=document.activeElement?.tagName;
+  if(['INPUT','TEXTAREA','SELECT'].includes(tag)||$('questionDialog').open||e.altKey||e.ctrlKey||e.metaKey)return;
+  if(/^[1-4]$/.test(e.key)){choose(ABCD[Number(e.key)-1]);}
+  else if(e.key==='ArrowRight'){e.preventDefault();navigate(1);}
+  else if(e.key==='ArrowLeft'){e.preventDefault();navigate(-1);}
+});
+render();
+})();
+</script>
+</body>
+</html>
